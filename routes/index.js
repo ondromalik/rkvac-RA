@@ -9,7 +9,6 @@ const {exec} = require("child_process");
 const multer = require("multer");
 const net = require('net');
 
-
 var session = require('express-session');
 var flash = require('connect-flash');
 var auth = require('./auth.js');
@@ -33,21 +32,11 @@ router.use(flash());
 
 /* TCP Socket for changing epoch */
 
-async function activateEpoch() {
-    return exec('./rkvac-protocol-multos-1.0.0 -r -e', (error, stdout, stderr) => {
-        if (error) {
-            console.log(`stdout: ${stdout}`);
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stdout: ${stdout}`);
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-        console.log(`stdout: ${stdout}`);
-    });
-}
+let currentEpoch = "";
+
+// async function activateEpoch() {
+//     return exec('./rkvac-protocol-multos-1.0.0 -r -e');
+// }
 
 const epochServer = net.createServer((c) => {
     // 'connection' listener.
@@ -57,29 +46,51 @@ const epochServer = net.createServer((c) => {
         console.log('client disconnected');
     });
     c.on('data', function (data) {
-        console.log(data);
+        console.log(data)
+        currentEpoch = data;
         fs.writeFile('./data/RA/ve_epoch_for_RA.dat', data, (err) => {
             if (err) {
                 console.log(err);
             }
             console.log("Data written to ./data/RA/ve_epoch_for_RA.dat");
-            activateEpoch().then(() => {
+            const epochActivation = exec('./rkvac-protocol-multos-1.0.0 -r -e');
+            epochActivation.stdout.on('data', (data) => {
+               console.log(data);
+            });
+            epochActivation.on('close', () => {
                 let files;
-                try {
-                    files = fs.readdirSync('./data/RA').filter(fn => fn.endsWith('for_verifier.dat'));
-                } catch (e) {
-                    console.log(e);
-                }
+                files = fs.readdirSync('./data/RA').filter(fn => fn.endsWith('for_verifier.dat'));
                 var readStream = fs.createReadStream('./data/RA/' + files[0], 'utf-8');
                 readStream.on('data', (data) => {
                     c.write(data);
+                });
+                readStream.on('error', (err) => {
+                    console.log(err);
                 });
                 readStream.on('end', () => {
                     c.write(" ");
                     c.end();
                 });
-                // c.write("Data processed");
             });
+            epochActivation.on('error', (err) => {
+                console.log(err);
+            });
+            // activateEpoch().then(() => {
+            //     let files;
+            //     files = fs.readdirSync('./data/RA').filter(fn => fn.endsWith('for_verifier.dat'));
+            //     var readStream = fs.createReadStream('./data/RA/' + files[0], 'utf-8');
+            //     readStream.on('data', (data) => {
+            //         c.write(data);
+            //     });
+            //     readStream.on('error', (err) => {
+            //         console.log(err);
+            //     });
+            //     readStream.on('end', () => {
+            //         c.write(" ");
+            //         c.end();
+            //     });
+                // c.write("Data processed");
+            // });
         });
     });
 });
@@ -90,9 +101,31 @@ epochServer.listen(5001, () => {
     console.log('server bound');
 });
 
+/* TCP Socket for user revocation */
+
+let socket = new net.Socket();
+socket.setEncoding('utf-8');
+const connect = (server) => {
+    socket.connect(5002, server)
+};
+socket.once('connect', function () {
+    console.log('Connected to server!');
+    var readStream = fs.createReadStream('./data/RA/ra_BL_epoch_' + currentEpoch + '_C_for_verifier.dat', 'utf-8');
+    readStream.on('data', (data) => {
+        socket.write(data);
+    });
+});
+socket.on('error', function (error) {
+    console.log("Terminating connection: " + error);
+    socket.end();
+});
+socket.on('end', function () {
+    console.log("Disconnected from server");
+});
+
 /* GET issuer page. */
 router.get('/', connectEnsureLogin.ensureLoggedIn(), function (req, res, next) {
-    res.render('index');
+    res.render('index', {epoch: currentEpoch});
 });
 
 router.get('/login', function (req, res, next) {
@@ -174,6 +207,26 @@ router.post('/initiateRA', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
         console.log(`stdout: ${stdout}`);
         res.sendStatus(200);
     });
+});
+
+router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    let command = './rkvac-protocol-multos-1.0.0 -r -B "' + req.body.id + ' ' + req.body.epoch + '"';
+    currentEpoch = req.body.epoch;
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`stdout: ${stdout}`);
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stdout: ${stdout}`);
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+        connect(req.body.verifierAddress);
+    });
+    res.redirect('/');
 });
 
 module.exports = router;

@@ -2,14 +2,26 @@ extends layout
 
 block content
 
+    div.w3-top
+        div.w3-bar.w3-dark-gray
+            a.w3-bar-item Aktuální epocha: #{epoch}
+            a.w3-bar-item(href="/logout" class="w3-bar-item w3-button w3-right")
+                i(class="fas fa-sign-out-alt fa-lg")
+
+    br
+
     div.w3-card-4.w3-margin-top(style="width:50%;margin-left:25%" id="initiatingRA")
         header.w3-gray.w3-padding
             h3 Inicializace Revokační autority
         div.w3-container.w3-padding
-            p Revokační autority není inicializována. Pokračujte stisknutím tlačítka:
+            p Revokační autority není inicializována. Pokračujte vydáním revokačního handleru.
             //form(action="/initiateRA" method="GET")
-            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='initiateRAButton') Inicializovat
-        //button(id="connectButton") Connect
+
+    div.w3-card-4.w3-margin-top(style="width:50%;margin-left:25%")
+        header.w3-light-blue.w3-padding
+            h3 Vydání revokačního handleru
+        div.w3-container.w3-padding
+            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='initiateRAButton') Vydat
 
     div.w3-card-4.w3-margin-top(style="width:50%;margin-left:25%" id="RAFiles" hidden=true)
         header.w3-light-gray.w3-padding
@@ -29,5 +41,22 @@ block content
                     td
                         form(action="/downloadRAParam" method="GET")
                             button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit') Stáhnout
+
+    div.w3-card-4.w3-margin-top(style="width:50%;margin-left:25%")
+        header.w3-gray.w3-padding
+            h3 Revokace uživatele
+        div.w3-container.w3-padding
+            p
+                label Identifikátor uživatele:
+                input.w3-input.w3-border.w3-round-medium(type="text" id="userID" placeholder="1000000000000001")
+            p
+                label Číslo epochy:
+                input.w3-input.w3-border.w3-round-medium(type="text" id="epochNumberID")
+            p
+                label Adresa ověřovatele:
+                input.w3-input.w3-border.w3-round-medium(type="text" id="verifierAddress" placeholder="localhost")
+            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='revokeIDButton') Revokovat
+            p
+                label(hidden=true id="messageID")
 
     script(src='RA-client.js')
