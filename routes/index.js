@@ -64,12 +64,18 @@ const epochServer = net.createServer((c) => {
             }
             console.log("Data written to ./data/RA/ve_epoch_for_RA.dat");
             activateEpoch().then(() => {
-                let files = fs.readdirSync('./data/RA').filter(fn => fn.endsWith('for_verifier.dat'));
+                let files;
+                try {
+                    files = fs.readdirSync('./data/RA').filter(fn => fn.endsWith('for_verifier.dat'));
+                } catch (e) {
+                    console.log(e);
+                }
                 var readStream = fs.createReadStream('./data/RA/' + files[0], 'utf-8');
                 readStream.on('data', (data) => {
                     c.write(data);
                 });
                 readStream.on('end', () => {
+                    c.write(" ");
                     c.end();
                 });
                 // c.write("Data processed");
