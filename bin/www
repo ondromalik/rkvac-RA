@@ -1,0 +1,143 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('diploma:server');
+var http = require('http');
+var https = require('https');
+var fs = require('fs');
+const WebSocket = require('ws');
+const net = require('net');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '9443');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+//var server = http.createServer(app);
+var server = https.createServer({
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert')
+}, app);
+var wss = new WebSocket.Server({server});
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+//server.listen(port, '192.168.0.213');
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
+
+    if (port >= 0) {
+        // port number
+        return port;
+    }
+
+    return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    var bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+}
+
+/**
+ * Websocket and TCP_socket connection
+ */
+
+wss.on('connection', function connection(ws) {
+    let connectCount = 0;
+    var client = new net.Socket();
+    const connect = () => {
+        client.connect(5000)
+    };
+
+    client.once('connect', function () {
+        console.log('Connected to server!');
+    });
+    client.on('error', function (error) {
+        if (error.code === 'ECONNREFUSED') {
+            if (connectCount <= 5) {
+                console.log("Trying to connect...");
+                setTimeout(connect, 1000);
+                connectCount++;
+            } else {
+                console.log("Terminating connection");
+                client.destroy();
+            }
+        }
+    });
+    connect();
+    ws.on('message', function incoming(message) {
+        client.write(message);
+    });
+    client.on('data', function (data) {
+        ws.send(data);
+    });
+    client.setTimeout(10000);
+    client.on('timeout', () => {
+        console.log("Terminating connection");
+        client.destroy();
+    });
+    client.on('end', function () {
+        console.log("Disconnected from server");
+    });
+});
