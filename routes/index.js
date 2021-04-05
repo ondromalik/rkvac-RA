@@ -75,22 +75,6 @@ const epochServer = net.createServer((c) => {
             epochActivation.on('error', (err) => {
                 console.log(err);
             });
-            // activateEpoch().then(() => {
-            //     let files;
-            //     files = fs.readdirSync('./data/RA').filter(fn => fn.endsWith('for_verifier.dat'));
-            //     var readStream = fs.createReadStream('./data/RA/' + files[0], 'utf-8');
-            //     readStream.on('data', (data) => {
-            //         c.write(data);
-            //     });
-            //     readStream.on('error', (err) => {
-            //         console.log(err);
-            //     });
-            //     readStream.on('end', () => {
-            //         c.write(" ");
-            //         c.end();
-            //     });
-                // c.write("Data processed");
-            // });
         });
     });
 });
@@ -210,7 +194,7 @@ router.post('/initiateRA', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
 });
 
 router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
-    let command = './rkvac-protocol-multos-1.0.0 -r -B "' + req.body.id + ' ' + req.body.epoch + '"';
+    let command = './rkvac-protocol-multos-1.0.0 -r -B "' + req.body.epoch + ' ' + req.body.id + '"';
     currentEpoch = req.body.epoch;
     exec(command, (error, stdout, stderr) => {
         if (error) {
