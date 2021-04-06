@@ -30,13 +30,11 @@ router.use(auth.session());
 
 router.use(flash());
 
+let keyExistence = fs.existsSync('./data/RA/ra_pk.dat');
+
 /* TCP Socket for changing epoch */
 
 let currentEpoch = "";
-
-// async function activateEpoch() {
-//     return exec('./rkvac-protocol-multos-1.0.0 -r -e');
-// }
 
 const epochServer = net.createServer((c) => {
     // 'connection' listener.
@@ -141,14 +139,7 @@ router.get('/check-data', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
 /* RA Functions */
 
 router.get('/check-ra-key-RA', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
-    fs.access('./data/RA/ra_pk.dat', fs.F_OK, (err) => {
-        if (err) {
-            res.sendStatus(503);
-            console.error(err)
-            return
-        }
-        res.sendStatus(200);
-    })
+    res.json({key: keyExistence});
 });
 
 
@@ -179,17 +170,17 @@ router.post('/initiateRA', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
         if (error) {
             console.log(`stdout: ${stdout}`);
             console.log(`error: ${error.message}`);
-            res.sendStatus(503);
+            res.json({success: false});
             return;
         }
         if (stderr) {
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
-            res.sendStatus(200);
+            res.json({success: false});
             return;
         }
         console.log(`stdout: ${stdout}`);
-        res.sendStatus(200);
+        res.json({success: true});
     });
 });
 
@@ -200,17 +191,41 @@ router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, r
         if (error) {
             console.log(`stdout: ${stdout}`);
             console.log(`error: ${error.message}`);
+            res.json({success: false});
             return;
         }
         if (stderr) {
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
+            res.json({success: false});
             return;
         }
         console.log(`stdout: ${stdout}`);
         connect(req.body.verifierAddress);
+        res.json({success: true});
     });
-    res.redirect('/');
+});
+
+router.post('/post-revoke-user-C', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    let command = './rkvac-protocol-multos-1.0.0 -r -b "' + req.body.epoch + ' ' + req.body.C + '"';
+    currentEpoch = req.body.epoch;
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`stdout: ${stdout}`);
+            console.log(`error: ${error.message}`);
+            res.json({success: false});
+            return;
+        }
+        if (stderr) {
+            console.log(`stdout: ${stdout}`);
+            console.log(`stderr: ${stderr}`);
+            res.json({success: false});
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+        connect(req.body.verifierAddress);
+        res.json({success: true});
+    });
 });
 
 module.exports = router;
