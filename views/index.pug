@@ -17,14 +17,8 @@ block content
             p Revokační autority není inicializována. Pokračujte vydáním revokačního handleru.
             //form(action="/initiateRA" method="GET")
 
-    div.w3-card-4.w3-margin-top(style="width:50%;margin-left:25%")
-        header.w3-light-blue.w3-padding
-            h3 Vydání revokačního handleru
-        div.w3-container.w3-padding
-            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='initiateRAButton') Vydat
-
     div.w3-card-4.w3-margin-top(style="width:50%;margin-left:25%" id="RAFiles" hidden=true)
-        header.w3-light-gray.w3-padding
+        header.w3-light-blue.w3-padding
             h3 Soubory Revokační autority
         div.w3-container.w3-padding
             table.w3-table
@@ -42,21 +36,38 @@ block content
                         form(action="/downloadRAParam" method="GET")
                             button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit') Stáhnout
 
+
     div.w3-card-4.w3-margin-top(style="width:50%;margin-left:25%")
-        header.w3-gray.w3-padding
+        header.w3-light-blue.w3-padding
+            h3 Vydání revokačního handleru
+        div.w3-container.w3-padding
+            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='initiateRAButton') Vydat
+        p.w3-container.w3-padding
+            label.w3-text-green(hidden=true id="messageHandlerOK") Revokační handler vydán
+            label.w3-text-red(hidden=true id="messageHandlerError") Požadavek nebyl úspěšný
+
+    div.w3-card-4.w3-margin-top(style="width:50%;margin-left:25%" id="revocation" hidden=true)
+        header.w3-light-blue.w3-padding
             h3 Revokace uživatele
         div.w3-container.w3-padding
             p
-                label Identifikátor uživatele:
+                label.w3-text-black(id="labelID") Identifikátor uživatele:
                 input.w3-input.w3-border.w3-round-medium(type="text" id="userID" placeholder="1000000000000001")
             p
+                label.w3-text-black(id="labelC") Pseudonym uživatele #[i C]:
+                input.w3-input.w3-border.w3-round-medium(type="text" id="userC" placeholder="7deba037f...")
+            p
+                label(hidden=true id="inputMessage") #[i Jenom jeden z dvojice parametrů identifikátor-pseudonym může být zadán.]
+            p
                 label Číslo epochy:
-                input.w3-input.w3-border.w3-round-medium(type="text" id="epochNumberID")
+                input.w3-input.w3-border.w3-round-medium(type="text" id="epochNumberID" value=epoch)
             p
                 label Adresa ověřovatele:
                 input.w3-input.w3-border.w3-round-medium(type="text" id="verifierAddress" placeholder="localhost")
             button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='revokeIDButton') Revokovat
             p
-                label(hidden=true id="messageID")
+                label.w3-text-green(hidden=true id="messageRevokeOK") Uživatel úspěšně revokován
+            p
+                label.w3-text-red(hidden=true id="messageRevokeError") Požadavek nebyl úspěšný
 
     script(src='RA-client.js')

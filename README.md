@@ -6,9 +6,10 @@
 - authentication via username & password
 - remote ID card
 - switching to new epoch
+- revoking users
 
 ## To do:
-- revoking users
+- local admin password management
 
 ## Usage:
 - build RKVAC C app directly in project folder
