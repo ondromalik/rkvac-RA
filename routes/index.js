@@ -139,6 +139,7 @@ router.get('/check-data', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
 /* RA Functions */
 
 router.get('/check-ra-key-RA', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    keyExistence = fs.existsSync('./data/RA/ra_pk.dat');
     res.json({key: keyExistence});
 });
 
@@ -176,7 +177,7 @@ router.post('/initiateRA', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
         if (stderr) {
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
-            res.json({success: false});
+            res.json({success: true});
             return;
         }
         console.log(`stdout: ${stdout}`);
@@ -205,6 +206,7 @@ router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, r
         res.json({success: true});
     });
 });
+
 
 router.post('/post-revoke-user-C', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
     let command = './rkvac-protocol-multos-1.0.0 -r -b "' + req.body.epoch + ' ' + req.body.C + '"';

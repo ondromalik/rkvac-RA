@@ -4,15 +4,16 @@
             method: 'GET'
         }).then((response) => {
             response.json().then((data) => {
-                if (data.key === true) {
+                console.log(data.key);
+                if (data.key) {
                     document.getElementById('RAFiles').hidden = false;
                     document.getElementById('revocation').hidden = false;
                     document.getElementById('initiatingRA').hidden = true;
                     return;
                 }
-                if (data.key === false) {
+                if (!data.key) {
                     document.getElementById('RAFiles').hidden = true;
-                    document.getElementById('revocation').hidden = false;
+                    document.getElementById('revocation').hidden = true;
                     document.getElementById('initiatingRA').hidden = false;
                     return;
                 }
