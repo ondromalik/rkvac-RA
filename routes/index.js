@@ -75,6 +75,14 @@ const epochServer = net.createServer((c) => {
             });
         });
     });
+    c.on('error', (err) => {
+        console.log(err);
+    });
+    c.setTimeout(10000);
+    c.on('timeout', () => {
+        console.log("Terminating connection");
+        c.destroy();
+    });
 });
 epochServer.on('error', (err) => {
     throw err;
