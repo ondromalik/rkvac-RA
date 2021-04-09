@@ -2,12 +2,6 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 const crypto = require('crypto');
 
-// var user = { // This a hard-coded user
-//     _id: 1,
-//     username: 'john',
-//     password: 'password'
-// };
-
 var userDB = {
     user: [
         {

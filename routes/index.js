@@ -87,7 +87,7 @@ const epochServer = net.createServer((c) => {
 epochServer.on('error', (err) => {
     throw err;
 });
-epochServer.listen(5001, () => {
+epochServer.listen({host: 'localhost', port: 5001, exclusive: true}, () => {
     console.log('server bound');
 });
 
