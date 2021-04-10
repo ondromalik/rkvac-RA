@@ -98,7 +98,7 @@ socket.setEncoding('utf-8');
 const connect = (server) => {
     socket.connect(5002, server)
 };
-socket.once('connect', function () {
+socket.on('connect', function () {
     console.log('Connected to server!');
     var readStream = fs.createReadStream('./data/RA/ra_BL_epoch_' + currentEpoch + '_C_for_verifier.dat', 'utf-8');
     readStream.on('data', (data) => {
