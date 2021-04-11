@@ -2,25 +2,28 @@
 
 ## Functions:
 - assigning revocation handler
-- downloading public files
+- public files management
 - authentication via username & password
-- remote ID card
 - switching to new epoch
 - revoking users
-
-## To do:
-- local admin password management
-
-## Usage:
-- build RKVAC C app directly in project folder
-- for starting server run command:
-  `npm run serverstart`
-- server runs on https://localhost:10443
 
 ## Dependencies:
 - nodeJS, npm
 - npm -i
 - WebCard: https://github.com/cardid/webcard
+
+## Installation:
+- build RKVAC C app directly in project folder
+- run (for installing node_modules):
+
+  `npm install`
+- for starting the server run command:
+
+  `npm run serverstart`
+- server runs on https://localhost:9443
+
+## User manual:
+- in progress
 
 ## Contact:
 xmalik19@stud.feec.vutbr.cz
