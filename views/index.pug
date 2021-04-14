@@ -10,34 +10,14 @@ block content
 
     br
 
-    div.w3-card-4.w3-margin-top(style="width:50%;margin-left:25%" id="initiatingRA")
+    div.w3-card-4.w3-margin-top(style="width:60%;margin-left:20%" id="initiatingRA")
         header.w3-gray.w3-padding
             h3 Inicializace Revokační autority
         div.w3-container.w3-padding
             p Revokační autority není inicializována. Pokračujte vydáním revokačního handleru.
             //form(action="/initiateRA" method="GET")
 
-    div.w3-card-4.w3-margin-top(style="width:50%;margin-left:25%" id="RAFiles" hidden=true)
-        header.w3-light-blue.w3-padding
-            h3 Soubory Revokační autority
-        div.w3-container.w3-padding
-            table.w3-table
-                tr
-                    th Soubor
-                    th Akce
-                tr
-                    td ra_pk.dat
-                    td
-                        form(action="/downloadRAKey" method="GET")
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit') Stáhnout
-                tr
-                    td ra_public_parameters.dat
-                    td
-                        form(action="/downloadRAParam" method="GET")
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit') Stáhnout
-
-
-    div.w3-card-4.w3-margin-top(style="width:50%;margin-left:25%")
+    div.w3-card-4.w3-margin-top(style="width:60%;margin-left:20%")
         header.w3-light-blue.w3-padding
             h3 Vydání revokačního handleru
         div.w3-container.w3-padding
@@ -46,7 +26,75 @@ block content
             label.w3-text-green(hidden=true id="messageHandlerOK") Revokační handler vydán
             label.w3-text-red(hidden=true id="messageHandlerError") Požadavek nebyl úspěšný
 
-    div.w3-card-4.w3-margin-top(style="width:50%;margin-left:25%" id="revocation" hidden=true)
+    div.w3-card-4.w3-margin-top(style="width:60%;margin-left:20%" id="RAFiles")
+        header.w3-light-blue.w3-padding
+            h3 Soubory Revokační autority
+        div.w3-container.w3-padding
+            table.w3-table
+                tr
+                    th(style="width:25%") Popis
+                    th Soubor
+                    th(style="width:30%") Akce
+                tr(id="uploadPk")
+                    form(action="/uploadPkFile" method="POST" enctype="multipart/form-data")
+                        td(style="padding-left:16px") Veřejný klíč
+                        td
+                            input.w3-input(type='file' name='ra_pk.dat')
+                        td
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Nahrát
+                tr(id="downloadPk")
+                    td Veřejný klíč
+                    td ra_pk.dat
+                    td
+                        form(action="/downloadPkFile" method="GET")
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small.w3-margin-right(type='submit') Stáhnout
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='button' id="deletePkButton") Vymazat
+                tr(id="uploadPubParam")
+                    form(action="/uploadPubParamFile" method="POST" enctype="multipart/form-data")
+                        td(style="padding-left:16px") Veřejné parametry
+                        td
+                            input.w3-input(type='file' name='ra_public_parameters.dat')
+                        td
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Nahrát
+                tr(id="downloadPubParam")
+                    td Veřejné parametre
+                    td ra_public_parameters.dat
+                    td
+                        form(action="/downloadPubParam" method="GET")
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small.w3-margin-right(type='submit') Stáhnout
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='button' id="deletePubParamButton") Vymazat
+                tr(id="uploadSk")
+                    form(action="/uploadSkFile" method="POST" enctype="multipart/form-data")
+                        td(style="padding-left:16px") Soukromý klíč
+                        td
+                            input.w3-input(type='file' name='ra_sk.dat')
+                        td
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Nahrát
+                tr(id="downloadSk")
+                    td Soukromý klíč
+                    td ra_sk.dat
+                    td
+                        form(action="/downloadSkFile" method="GET")
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small.w3-margin-right(type='submit') Stáhnout
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='button' id="deleteSkButton") Vymazat
+                tr(id="uploadParam")
+                    form(action="/uploadParamFile" method="POST" enctype="multipart/form-data")
+                        td(style="padding-left:16px") Veřejné parametry
+                        td
+                            input.w3-input(type='file' name='ra_parameters.dat')
+                        td
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Nahrát
+                tr(id="downloadParam")
+                    td Veřejné parametre
+                    td ra_parameters.dat
+                    td
+                        form(action="/downloadParam" method="GET")
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small.w3-margin-right(type='submit') Stáhnout
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='button' id="deleteParamButton") Vymazat
+
+
+
+    div.w3-card-4.w3-margin-top(style="width:60%;margin-left:20%" id="revocation" hidden=true)
         header.w3-light-blue.w3-padding
             h3 Revokace uživatele
         div.w3-container.w3-padding

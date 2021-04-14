@@ -32,6 +32,26 @@ router.use(flash());
 
 let keyExistence = fs.existsSync('./data/RA/ra_pk.dat');
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './data/RA/');
+    },
+
+    // By default, multer removes file extensions so let's add them back
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname);
+    }
+});
+
+const keyFilter = function (req, file, cb) {
+    // Accept images only
+    if (!file.originalname.match(/\.(dat)$/)) {
+        req.fileValidationError = 'Only .dat files are allowed!';
+        return cb(new Error('Only .dat files are allowed!'), false);
+    }
+    cb(null, true);
+};
+
 /* TCP Socket for changing epoch */
 
 let currentEpoch = "";
@@ -151,14 +171,58 @@ router.get('/check-ra-key-RA', connectEnsureLogin.ensureLoggedIn(), (req, res) =
     res.json({key: keyExistence});
 });
 
+router.get('/check-keys', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    let response = {
+        publicKey: false,
+        publicParam: false,
+        privateKey: false,
+        privateParam: false
+    }
+    fs.access('./data/RA/ra_pk.dat', fs.F_OK, (err) => {
+        if (!err) {
+            response.publicKey = true;
+        }
+        fs.access('./data/RA/ra_public_parameters.dat', fs.F_OK, (err) => {
+            if (!err) {
+                response.publicParam = true;
+            }
+            fs.access('./data/RA/ra_sk.dat', fs.F_OK, (err) => {
+                if (!err) {
+                    response.privateKey = true;
+                }
+                fs.access('./data/RA/ra_parameters.dat', fs.F_OK, (err) => {
+                    if (!err) {
+                        response.privateParam = true;
+                    }
+                    res.json({
+                        publicKey: response.publicKey,
+                        publicParam: response.publicParam,
+                        privateKey: response.privateKey,
+                        privateParam: response.privateParam});
+                });
+            });
+        });
+    });
+});
 
-router.get('/downloadRAKey', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+
+router.get('/downloadPkFile', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
     const file = './data/RA/ra_pk.dat';
     res.download(file);
 });
 
-router.get('/downloadRAParam', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+router.get('/downloadPubParam', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
     const file = './data/RA/ra_public_parameters.dat';
+    res.download(file);
+});
+
+router.get('/downloadSkFile', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    const file = './data/RA/ra_sk.dat';
+    res.download(file);
+});
+
+router.get('/downloadParam', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    const file = './data/RA/ra_parameters.dat';
     res.download(file);
 });
 
@@ -191,6 +255,88 @@ router.post('/initiateRA', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
         console.log(`stdout: ${stdout}`);
         res.json({success: true});
     });
+});
+
+router.post('/uploadPkFile', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    // 'profile_pic' is the name of our file input field in the HTML form
+    let upload = multer({storage: storage, fileFilter: keyFilter}).single("ra_pk.dat");
+
+    upload(req, res, function (err) {
+        if (req.fileValidationError) {
+            return res.send(req.fileValidationError);
+        } else if (!req.file) {
+            return res.send('Please select ".dat" file to upload');
+        } else if (err instanceof multer.MulterError) {
+            return res.send(err);
+        } else if (err) {
+            return res.send(err);
+        }
+        res.redirect('/');
+    });
+});
+
+router.post('/uploadPubParamFile', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    // 'profile_pic' is the name of our file input field in the HTML form
+    let upload = multer({storage: storage, fileFilter: keyFilter}).single("ra_public_parameters.dat");
+
+    upload(req, res, function (err) {
+        if (req.fileValidationError) {
+            return res.send(req.fileValidationError);
+        } else if (!req.file) {
+            return res.send('Please select ".dat" file to upload');
+        } else if (err instanceof multer.MulterError) {
+            return res.send(err);
+        } else if (err) {
+            return res.send(err);
+        }
+        res.redirect('/');
+    });
+});
+
+router.post('/uploadSkFile', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    // 'profile_pic' is the name of our file input field in the HTML form
+    let upload = multer({storage: storage, fileFilter: keyFilter}).single("ra_sk.dat");
+
+    upload(req, res, function (err) {
+        if (req.fileValidationError) {
+            return res.send(req.fileValidationError);
+        } else if (!req.file) {
+            return res.send('Please select ".dat" file to upload');
+        } else if (err instanceof multer.MulterError) {
+            return res.send(err);
+        } else if (err) {
+            return res.send(err);
+        }
+        res.redirect('/');
+    });
+});
+
+router.post('/uploadParamFile', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    // 'profile_pic' is the name of our file input field in the HTML form
+    let upload = multer({storage: storage, fileFilter: keyFilter}).single("ra_parameters.dat");
+
+    upload(req, res, function (err) {
+        if (req.fileValidationError) {
+            return res.send(req.fileValidationError);
+        } else if (!req.file) {
+            return res.send('Please select ".dat" file to upload');
+        } else if (err instanceof multer.MulterError) {
+            return res.send(err);
+        } else if (err) {
+            return res.send(err);
+        }
+        res.redirect('/');
+    });
+});
+
+router.post('/deleteFile', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    fs.unlink('./data/RA/' + req.body.fileName, (err) => {
+        if (err) {
+            console.error(err)
+            return
+        }
+        res.json({success: true});
+    })
 });
 
 router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
