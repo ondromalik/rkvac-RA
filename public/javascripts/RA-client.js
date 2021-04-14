@@ -21,7 +21,6 @@
             method: 'GET'
         }).then((response) => {
             response.json().then((data) => {
-                console.log(data.key);
                 if (data.publicKey) {
                     document.getElementById('uploadPk').hidden = true;
                     document.getElementById('downloadPk').hidden = false;
