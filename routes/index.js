@@ -87,7 +87,7 @@ const epochServer = net.createServer((c) => {
 epochServer.on('error', (err) => {
     throw err;
 });
-epochServer.listen({host: 'localhost', port: 5001, exclusive: true}, () => {
+epochServer.listen({host: 'localhost', port: 5004, exclusive: true}, () => {
     console.log('server bound');
 });
 
@@ -96,7 +96,7 @@ epochServer.listen({host: 'localhost', port: 5001, exclusive: true}, () => {
 let socket = new net.Socket();
 socket.setEncoding('utf-8');
 const connect = (server) => {
-    socket.connect(5002, server)
+    socket.connect(5003, server)
 };
 socket.on('connect', function () {
     console.log('Connected to server!');
