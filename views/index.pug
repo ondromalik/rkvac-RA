@@ -14,14 +14,15 @@ block content
         header.w3-gray.w3-padding
             h3 Inicializace Revokační autority
         div.w3-container.w3-padding
-            p Revokační autority není inicializována. Pokračujte vydáním revokačního handleru.
-            //form(action="/initiateRA" method="GET")
+            p Revokační autority není inicializována. Pokračujte inicializací aplikace, nebo vydáním revokačního handleru.
+            form(action="/initiateRA" method="GET")
+                button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit') Inicializovat
 
     div.w3-card-4.w3-margin-top(style="width:60%;margin-left:20%")
         header.w3-light-blue.w3-padding
             h3 Vydání revokačního handleru
         div.w3-container.w3-padding
-            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='initiateRAButton') Vydat
+            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='issueHandlerButton') Vydat
         p.w3-container.w3-padding
             label.w3-text-green(hidden=true id="messageHandlerOK") Revokační handler vydán
             label.w3-text-red(hidden=true id="messageHandlerError") Požadavek nebyl úspěšný
@@ -117,5 +118,13 @@ block content
                 label.w3-text-green(hidden=true id="messageRevokeOK") Uživatel úspěšně revokován
             p
                 label.w3-text-red(hidden=true id="messageRevokeError") Požadavek nebyl úspěšný
+
+    div.w3-card-4.w3-margin-top.w3-margin-bottom(style="width:60%;margin-left:20%")
+        header.w3-light-blue.w3-padding
+            h3 Reset aplikace
+        div.w3-container.w3-padding
+            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='resetRKVAC') Resetovat
+        div.w3-container.w3-padding(id="resetMessage" hidden=true)
+            label.w3-text-red Požadavek nebyl úspěšný
 
     script(src='RA-client.js')

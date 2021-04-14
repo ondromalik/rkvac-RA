@@ -1,5 +1,22 @@
 {
     function checkRA() {
+        fetch('/check-data', {
+            method: 'GET'
+        }).then((response) => {
+            response.json().then((data) => {
+                if (data.success) {
+                    document.getElementById('initiatingRA').hidden = true;
+                    return;
+                }
+                if (!data.success) {
+                    document.getElementById('initiatingRA').hidden = false;
+                    return;
+                }
+                throw new Error('Request failed');
+            }).catch((error) => {
+                console.log(error);
+            });
+        });
         fetch('/check-keys', {
             method: 'GET'
         }).then((response) => {
@@ -40,10 +57,8 @@
                 if (data.publicKey && data.publicParam && data.privateKey && data.privateParam) {
                     document.getElementById('revocation').hidden = false;
                     document.getElementById('initiatingRA').hidden = true;
-                }
-                else {
+                } else {
                     document.getElementById('revocation').hidden = true;
-                    document.getElementById('initiatingRA').hidden = false;
                 }
             }).catch(function (error) {
                 console.log(error);
@@ -51,9 +66,9 @@
         });
     }
 
-    const initiateRAButton = document.getElementById('initiateRAButton');
-    initiateRAButton.addEventListener('click', function (e) {
-        fetch('/initiateRA', {
+    const issueRevokeHandler = document.getElementById('issueHandlerButton');
+    issueRevokeHandler.addEventListener('click', function (e) {
+        fetch('/issueHandler', {
             method: 'POST'
         }).then(function (response) {
             response.json().then((data) => {
@@ -173,6 +188,26 @@
 
     document.getElementById('deleteParamButton').addEventListener('click', () => {
         deleteFile("ra_parameters.dat");
+    });
+
+    document.getElementById('resetRKVAC').addEventListener('click', () => {
+        var really = confirm("Chystáte se vymazat veškerou RKVAC konfiguraci.\nPřejete si pokračovat?");
+        if (really) {
+            fetch("/deleteData", {
+                method: 'POST'
+            }).then((response) => {
+                response.json().then((data) => {
+                    if (data.success) {
+                        location.reload();
+                        return;
+                    }
+                    document.getElementById('resetMessage').hidden = false;
+                    throw new Error('Request failed.');
+                }).catch((error) => {
+                    console.log(error);
+                });
+            });
+        }
     });
 
     function deleteFile(fileName) {

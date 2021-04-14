@@ -73,7 +73,7 @@ const epochServer = net.createServer((c) => {
             console.log("Data written to ./data/RA/ve_epoch_for_RA.dat");
             const epochActivation = exec('./rkvac-protocol-multos-1.0.0 -r -e');
             epochActivation.stdout.on('data', (data) => {
-               console.log(data);
+                console.log(data);
             });
             epochActivation.on('close', () => {
                 let files;
@@ -152,24 +152,28 @@ router.get('/login', function (req, res, next) {
 router.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
-})
+});
+
+router.get('/initiateRA', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    fs.mkdir('./data/RA', {recursive: true}, err => {
+        if (err) {
+            console.log(err);
+        }
+        res.redirect('/');
+    })
+});
 
 router.get('/check-data', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
     fs.access('./data', fs.F_OK, (err) => {
         if (err) {
-            res.sendStatus(404);
+            res.json({success: false});
             return
         }
-        res.sendStatus(200);
+        res.json({success: true});
     })
 });
 
 /* RA Functions */
-
-router.get('/check-ra-key-RA', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
-    keyExistence = fs.existsSync('./data/RA/ra_pk.dat');
-    res.json({key: keyExistence});
-});
 
 router.get('/check-keys', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
     let response = {
@@ -198,7 +202,8 @@ router.get('/check-keys', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
                         publicKey: response.publicKey,
                         publicParam: response.publicParam,
                         privateKey: response.privateKey,
-                        privateParam: response.privateParam});
+                        privateParam: response.privateParam
+                    });
                 });
             });
         });
@@ -237,7 +242,7 @@ router.post('/login',
 
 router.use(bodyParser.json());
 
-router.post('/initiateRA', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+router.post('/issueHandler', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
     let command = "./rkvac-protocol-multos-1.0.0 -r";
     exec(command, (error, stdout, stderr) => {
         if (error) {
@@ -253,6 +258,17 @@ router.post('/initiateRA', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
             return;
         }
         console.log(`stdout: ${stdout}`);
+        res.json({success: true});
+    });
+});
+
+router.post('/deleteData', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    fs.rmdir('./data', {recursive: true}, err => {
+        if (err) {
+            console.log(err);
+            res.json({success: false});
+            return;
+        }
         res.json({success: true});
     });
 });
