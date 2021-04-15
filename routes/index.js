@@ -135,7 +135,7 @@ socket.on('end', function () {
 
 /* GET issuer page. */
 router.get('/', connectEnsureLogin.ensureLoggedIn(), function (req, res, next) {
-    res.render('index', {epoch: currentEpoch});
+    res.render('index');
 });
 
 router.get('/login', function (req, res, next) {

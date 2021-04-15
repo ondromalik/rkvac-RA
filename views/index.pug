@@ -4,7 +4,6 @@ block content
 
     div.w3-top
         div.w3-bar.w3-dark-gray
-            a.w3-bar-item Aktuální epocha: #{epoch}
             a.w3-bar-item(href="/logout" class="w3-bar-item w3-button w3-right")
                 i(class="fas fa-sign-out-alt fa-lg")
 
@@ -22,7 +21,19 @@ block content
         header.w3-light-blue.w3-padding
             h3 Vydání revokačního handleru
         div.w3-container.w3-padding
-            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='issueHandlerButton') Vydat
+            h4.w3-margin-bottom Zvolte čtečku:
+            div.w3-center.w3-margin-top
+                label.w3-text-red(id="cardStatus") Čtečka nedostupná
+                div(id="readerList")
+            div.w3-container.w3-margin-top.w3-center
+                div(class="loader2" id="card-loader" hidden=true)
+                p.w3-text-green(id="cardConnected" hidden=true) Karta je funkční
+                p.w3-text-red(id="cardDisconnected" hidden=true) Karta není funkční
+            div(id="reloadMessage" hidden=true)
+                p #[i V případě nezobrazení čtečky je nutné restartovat doplněk "Smart Card Extension", nebo celý prohlížeč.]
+            label #[i Info: Kliknutím na čtečku ji otestujete.]
+        div.w3-container.w3-padding
+            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='issueHandlerButton' disabled=true) Vydat
         div.w3-container.w3-padding
             div(class="loader" id="login-loader" hidden=true)
             label.w3-text-green(hidden=true id="messageHandlerOK") Revokační handler vydán
@@ -110,7 +121,7 @@ block content
                 label(hidden=true id="inputMessage") #[i Jenom jeden z dvojice parametrů identifikátor-pseudonym může být zadán.]
             p
                 label Číslo epochy:
-                input.w3-input.w3-border.w3-round-medium(type="text" id="epochNumberID" value=epoch)
+                input.w3-input.w3-border.w3-round-medium(type="text" id="epochNumberID")
             p
                 label Adresa ověřovatele:
                 input.w3-input.w3-border.w3-round-medium(type="text" id="verifierAddress" placeholder="localhost")
