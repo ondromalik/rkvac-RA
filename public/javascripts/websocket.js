@@ -21,6 +21,9 @@
 
     async function contactCard(hexdata) {
         var _readers = await navigator.webcard.readers();
+        if (!_readers[0]) {
+            throw new Error('Card not connected');
+        }
         let atr = await _readers[0].connect(true);
         let res = await _readers[0].transcieve(hexdata);
         _readers[0].disconnect();
@@ -36,6 +39,10 @@
                 contactCard(hexStr).then(returnMessage => {
                     console.log("APDU response: " + returnMessage);
                     socket.send(hexToBlob(returnMessage));
+                }).catch((error) => {
+                    socket.send("error");
+                    console.log(error);
+                    socket.close();
                 });
             });
         });

@@ -127,6 +127,10 @@ wss.on('connection', function connection(ws) {
     });
     connect();
     ws.on('message', function incoming(message) {
+        if (message === "error") {
+            console.log("Card not connected, terminating connection");
+            client.destroy();
+        }
         client.write(message);
     });
     client.on('data', function (data) {
