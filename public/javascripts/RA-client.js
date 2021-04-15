@@ -67,10 +67,12 @@
 
     const issueRevokeHandler = document.getElementById('issueHandlerButton');
     issueRevokeHandler.addEventListener('click', function (e) {
+        startLoader();
         fetch('/issueHandler', {
             method: 'POST'
         }).then(function (response) {
             response.json().then((data) => {
+                hideLoader();
                 if (data.success) {
                     document.getElementById('messageHandlerOK').hidden = false;
                     document.getElementById('messageHandlerError').hidden = true;
@@ -228,6 +230,14 @@
                 console.log(error);
             });
         });
+    }
+
+    function startLoader() {
+        document.getElementById('login-loader').hidden = false;
+    }
+
+    function hideLoader() {
+        document.getElementById('login-loader').hidden = true;
     }
 
     window.onload = checkRA;
