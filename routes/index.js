@@ -249,6 +249,11 @@ router.get('/downloadParam', connectEnsureLogin.ensureLoggedIn(), (req, res) => 
     res.download(file);
 });
 
+router.get('/downloadLog', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    const file = './main.log';
+    res.download(file);
+});
+
 /* POST metods */
 router.post('/login',
     auth.authenticate('login', {
@@ -389,20 +394,20 @@ router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, r
         if (error) {
             console.log(`stdout: ${stdout}`);
             console.log(`error: ${error.message}`);
-            logData(stdout, stderr, error);
+            logData(stdout, error, stderr);
             res.json({success: false});
             return;
         }
         if (stderr) {
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
-            logData(stdout, stderr, error);
+            logData(stdout, error, stderr);
             res.json({success: false});
             return;
         }
         console.log(`stdout: ${stdout}`);
         connect(req.body.verifierAddress);
-        logData(stdout, stderr, error);
+        logData(stdout, error, stderr);
         res.json({success: true});
     });
 });
@@ -415,20 +420,20 @@ router.post('/post-revoke-user-C', connectEnsureLogin.ensureLoggedIn(), (req, re
         if (error) {
             console.log(`stdout: ${stdout}`);
             console.log(`error: ${error.message}`);
-            logData(stdout, stderr, error);
+            logData(stdout, error, stderr);
             res.json({success: false});
             return;
         }
         if (stderr) {
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
-            logData(stdout, stderr, error);
+            logData(stdout, error, stderr);
             res.json({success: false});
             return;
         }
         console.log(`stdout: ${stdout}`);
         connect(req.body.verifierAddress);
-        logData(stdout, stderr, error);
+        logData(stdout, error, stderr);
         res.json({success: true});
     });
 });
