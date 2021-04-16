@@ -52,6 +52,23 @@ const keyFilter = function (req, file, cb) {
     cb(null, true);
 };
 
+function logData(stdout, err, stderr) {
+    let date = new Date();
+    let dateFormat = date.getFullYear() + '/' + (date.getMonth() < 10 ? '0' : '') + date.getMonth() + '/' + (date.getDate() < 10 ? '0' : '') + date.getDate() + ' ' +
+        date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + ":" + (date.getSeconds() < 10 ? '0' : '') + date.getSeconds() + ' ';
+    if (err) {
+        stdout += '\n' + 'error: ' + err;
+    }
+    if (stderr) {
+        stdout += '\n' + 'stderr: ' + stderr;
+    }
+    fs.appendFile('./main.log', dateFormat + stdout + '\n', 'utf-8', (err) => {
+        if (err) {
+            console.log(err);
+        }
+    });
+}
+
 /* TCP Socket for changing epoch */
 
 let currentEpoch = "";
@@ -159,6 +176,7 @@ router.get('/initiateRA', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
         if (err) {
             console.log(err);
         }
+        logData('RKVAC was initiated');
         res.redirect('/');
     })
 });
@@ -248,16 +266,19 @@ router.post('/issueHandler', connectEnsureLogin.ensureLoggedIn(), (req, res) => 
         if (error) {
             console.log(`stdout: ${stdout}`);
             console.log(`error: ${error.message}`);
+            logData(stdout, error, stderr);
             res.json({success: false});
             return;
         }
         if (stderr) {
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
+            logData(stdout, error, stderr);
             res.json({success: true});
             return;
         }
         console.log(`stdout: ${stdout}`);
+        logData(stdout, error, stderr);
         res.json({success: true});
     });
 });
@@ -269,6 +290,7 @@ router.post('/deleteData', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
             res.json({success: false});
             return;
         }
+        logData('RKVAC was reseted', err);
         res.json({success: true});
     });
 });
@@ -287,6 +309,7 @@ router.post('/uploadPkFile', connectEnsureLogin.ensureLoggedIn(), (req, res) => 
         } else if (err) {
             return res.send(err);
         }
+        logData('ra_pk.dat was uploaded');
         res.redirect('/');
     });
 });
@@ -305,6 +328,7 @@ router.post('/uploadPubParamFile', connectEnsureLogin.ensureLoggedIn(), (req, re
         } else if (err) {
             return res.send(err);
         }
+        logData('ra_public_parameters.dat was uploaded');
         res.redirect('/');
     });
 });
@@ -323,6 +347,7 @@ router.post('/uploadSkFile', connectEnsureLogin.ensureLoggedIn(), (req, res) => 
         } else if (err) {
             return res.send(err);
         }
+        logData('ra_sk.dat was uploaded');
         res.redirect('/');
     });
 });
@@ -341,6 +366,7 @@ router.post('/uploadParamFile', connectEnsureLogin.ensureLoggedIn(), (req, res) 
         } else if (err) {
             return res.send(err);
         }
+        logData('ra_parameters.dat was uploaded');
         res.redirect('/');
     });
 });
@@ -351,6 +377,7 @@ router.post('/deleteFile', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
             console.error(err)
             return
         }
+        logData('./data/RA/' + req.body.fileName + ' was deleted');
         res.json({success: true});
     })
 });
@@ -362,17 +389,20 @@ router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, r
         if (error) {
             console.log(`stdout: ${stdout}`);
             console.log(`error: ${error.message}`);
+            logData(stdout, stderr, error);
             res.json({success: false});
             return;
         }
         if (stderr) {
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
+            logData(stdout, stderr, error);
             res.json({success: false});
             return;
         }
         console.log(`stdout: ${stdout}`);
         connect(req.body.verifierAddress);
+        logData(stdout, stderr, error);
         res.json({success: true});
     });
 });
@@ -385,17 +415,20 @@ router.post('/post-revoke-user-C', connectEnsureLogin.ensureLoggedIn(), (req, re
         if (error) {
             console.log(`stdout: ${stdout}`);
             console.log(`error: ${error.message}`);
+            logData(stdout, stderr, error);
             res.json({success: false});
             return;
         }
         if (stderr) {
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
+            logData(stdout, stderr, error);
             res.json({success: false});
             return;
         }
         console.log(`stdout: ${stdout}`);
         connect(req.body.verifierAddress);
+        logData(stdout, stderr, error);
         res.json({success: true});
     });
 });
