@@ -2,16 +2,6 @@ extends layout
 
 block content
 
-    div.w3-top
-        div.w3-bar.w3-dark-gray
-            a.w3-bar-item(href="/logout" class="w3-bar-item w3-button w3-right")
-                i(class="fas fa-sign-out-alt fa-lg")
-            form(action="/downloadLog" method="GET")
-                button.w3-button.w3-bar-item.w3-right(type='submit')
-                    i(class="fas fa-download fa-lg")
-
-    br
-
     div.w3-card-4.w3-margin-top(style="width:60%;margin-left:20%" id="initiatingRA")
         header.w3-gray.w3-padding
             h3 Inicializace Revokační autority

@@ -1,9 +1,22 @@
 doctype html
 html
-  head
-    title= "RKVAC RA"
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src="webcard.js")
-    script(src="websocket.js")
-  body
-    block content
+    head
+        title= "RKVAC RA"
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        script(src="webcard.js")
+        script(src="websocket.js")
+    body
+        div.w3-top
+            div.w3-bar.w3-dark-gray
+                a.w3-bar-item(href="/" class="w3-bar-item w3-button")
+                    i(class="fas fa-home fa-lg")
+                a.w3-bar-item(href="/logout" class="w3-bar-item w3-button w3-right")
+                    i(class="fas fa-sign-out-alt fa-lg")
+                form(action="/downloadLog" method="GET")
+                    button.w3-button.w3-bar-item.w3-right(type='submit')
+                        i(class="fas fa-download fa-lg")
+                a(href="/change-password" class="w3-bar-item w3-button w3-right") Změna hesla
+
+        br
+
+        block content
