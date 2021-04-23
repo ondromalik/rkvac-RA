@@ -80,6 +80,11 @@
         }).then(function (response) {
             response.json().then((data) => {
                 hideLoader();
+                document.getElementById('rkvacUsed').hidden = true;
+                if (data.rkvacUsed) {
+                    document.getElementById('rkvacUsed').hidden = false;
+                    return;
+                }
                 if (data.success) {
                     document.getElementById('messageHandlerOK').hidden = false;
                     document.getElementById('messageHandlerError').hidden = true;
