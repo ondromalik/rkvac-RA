@@ -4875,3 +4875,12 @@ readers do not read off random characters that represent icons */
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.table-refresh__button--refreshing {
+  animation: 0.5s rotate infinite linear;
+}
+@keyframes rotate {
+  to {
+    transform: rotate(1turn);
+  }
+}

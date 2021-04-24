@@ -1,0 +1,28 @@
+extends layout
+
+block content
+    div.w3-card-4.w3-margin-top(style="width:60%;margin-left:20%" id="initiatingRA")
+        header.w3-light-blue.w3-padding
+            h3 Permitted Verifiers
+        div.w3-container.w3-padding
+            p #[i Only hosts in this list are allowed to connect to revocation authority in order to activate their epoch]
+            div.w3-panel
+                label Verifier's IP Address
+            div.w3-panel
+                input.w3-input.w3-border.w3-round-medium(type="text" id="hostname")
+            div.w3-panel
+                button.w3-button.w3-round-medium.w3-light-gray.w3-border.w3-border-grey.w3-padding-small(id='btnNewHost') Add
+        div.w3-container.w3-padding
+            div
+                a.w3-button.w3-circle.w3-hover-white(id="btnRefreshList")
+                    i(class="fas fa-sync-alt")
+                label(id="updatedDate").w3-text-gray Refreshed: never
+            div(class="verifiersTable" data-url="/refreshList")
+                table(class="w3-table-all w3-gray table-verifiersTable")
+                    thead
+                        tr.w3-light-gray
+                    tbody
+                        tr
+                            td List is empty
+
+    script(src="verifiers.js")

@@ -78,7 +78,7 @@ const epochServer = net.createServer((c) => {
     // 'connection' listener.
     let permittedHosts = [];
     try {
-        permittedHosts = fs.readFileSync('./permitted-connections').toString().split("\n");
+        permittedHosts = fs.readFileSync('./permitted-hosts').toString().split("\n");
     } catch (e) {
         console.log(e);
     }
@@ -86,8 +86,7 @@ const epochServer = net.createServer((c) => {
         c.end();
         console.log("Client " + c.remoteAddress + " not permitted");
         logData("Client " + c.remoteAddress + " not permitted");
-    }
-    else {
+    } else {
         console.log("Client " + c.remoteAddress + " permitted");
         logData("Client " + c.remoteAddress + " permitted");
         c.setEncoding('utf-8');
@@ -170,6 +169,10 @@ socket.on('end', function () {
 /* GET issuer page. */
 router.get('/', connectEnsureLogin.ensureLoggedIn(), function (req, res, next) {
     res.render('index');
+});
+
+router.get('/verifiers', connectEnsureLogin.ensureLoggedIn(), function (req, res, next) {
+    res.render('verifiers');
 });
 
 router.get('/login', function (req, res, next) {
@@ -497,6 +500,75 @@ router.post('/change-password', connectEnsureLogin.ensureLoggedIn(), (req, res) 
             }
             res.render('password-form', {successMessage: "Heslo změnené"});
         });
+    });
+});
+
+// Verifiers
+const verifiersData = {
+    headers: ["Host", ""],
+    rows: []
+};
+
+function loadVerifiers(userFile) {
+    return new Promise((resolve, reject) => {
+        try {
+            const fileStream = fs.createReadStream(userFile).on('error', reject);
+            readline.createInterface({
+                input: fileStream,
+                console: false
+            }).on('line', function (line) {
+                if (line !== '') {
+                    verifiersData.rows.push(line);
+                }
+            }).on('close', function () {
+                resolve(verifiersData);
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+}
+
+router.get('/refreshList', connectEnsureLogin.ensureLoggedIn(), function (req, res) {
+    verifiersData.rows = [];
+    loadVerifiers('./permitted-hosts').then((data) => {
+        res.json({
+            headers: data.headers,
+            rows: data.rows
+        })
+    }).catch(err => {
+        res.json({
+            success: false
+        })
+        console.log('Error: ' + err);
+    })
+});
+
+router.post('/delete-verifier', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    try {
+        let verifiers = fs.readFileSync('./permitted-hosts').toString().split("\n");
+        fs.rmSync('./permitted-hosts');
+        for (const verifier of verifiers) {
+            if (verifier !== req.body.hostname) {
+                fs.appendFileSync('./permitted-hosts', verifier + '\n', 'utf-8');
+            }
+        }
+        res.json({success: true});
+    } catch (e) {
+        console.log(e);
+        res.json({success: false});
+    }
+});
+
+router.post('/add-verifier', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+    fs.appendFile('./permitted-hosts', req.body.hostname + '\n', 'utf-8', (err) => {
+        if (err) {
+            console.log(err);
+            res.json({success: false});
+            return;
+        }
+        console.log("Host added to permitted hosts");
+        res.json({success:true});
     });
 });
 
