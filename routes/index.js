@@ -145,27 +145,6 @@ epochServer.listen({port: 5004, host: '0.0.0.0', exclusive: true}, () => {
     console.log('server bound');
 });
 
-/* TCP Socket for user revocation */
-let socket = new net.Socket();
-socket.setEncoding('utf-8');
-const connect = (server) => {
-    socket.connect({port: 5003, host: server})
-};
-socket.on('connect', function () {
-    console.log("Connected to server");
-    var readStream = fs.createReadStream('./data/RA/ra_BL_epoch_' + currentEpoch + '_C_for_verifier.dat', 'utf-8');
-    readStream.on('data', (data) => {
-        socket.write(data);
-    });
-});
-socket.on('error', function (error) {
-    console.log("Terminating connection: " + error);
-    socket.end();
-});
-socket.on('end', function () {
-    console.log("Disconnected from server");
-});
-
 /* GET issuer page. */
 router.get('/', connectEnsureLogin.ensureLoggedIn(), function (req, res, next) {
     res.render('index');
@@ -438,8 +417,26 @@ router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, r
             res.json({success: false});
             return;
         }
+        let verifiers = req.body.verifierAddress.split(',');
+        for (const verifier of verifiers) {
+            let socket = new net.createConnection({port: 5003, host: verifier});
+            socket.setEncoding('utf-8');
+            socket.on('connect', function () {
+                console.log("Connected to server");
+                var readStream = fs.createReadStream('./data/RA/ra_BL_epoch_' + currentEpoch + '_C_for_verifier.dat', 'utf-8');
+                readStream.on('data', (data) => {
+                    socket.write(data);
+                });
+            });
+            socket.on('error', function (error) {
+                console.log("Terminating connection: " + error);
+                socket.end();
+            });
+            socket.on('end', function () {
+                console.log("Disconnected from server");
+            });
+        }
         console.log(`stdout: ${stdout}`);
-        connect(req.body.verifierAddress);
         logData(stdout, error, stderr);
         res.json({success: true});
     });
@@ -465,7 +462,25 @@ router.post('/post-revoke-user-C', connectEnsureLogin.ensureLoggedIn(), (req, re
             return;
         }
         console.log(`stdout: ${stdout}`);
-        connect(req.body.verifierAddress);
+        let verifiers = req.body.verifierAddress.split(',');
+        for (const verifier of verifiers) {
+            let socket = new net.createConnection({port: 5003, host: verifier});
+            socket.setEncoding('utf-8');
+            socket.on('connect', function () {
+                console.log("Connected to server");
+                var readStream = fs.createReadStream('./data/RA/ra_BL_epoch_' + currentEpoch + '_C_for_verifier.dat', 'utf-8');
+                readStream.on('data', (data) => {
+                    socket.write(data);
+                });
+            });
+            socket.on('error', function (error) {
+                console.log("Terminating connection: " + error);
+                socket.end();
+            });
+            socket.on('end', function () {
+                console.log("Disconnected from server");
+            });
+        }
         logData(stdout, error, stderr);
         res.json({success: true});
     });
