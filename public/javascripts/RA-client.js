@@ -111,6 +111,7 @@
         let userC = document.getElementById('userC').value;
         let epochNumber = document.getElementById('epochNumberID').value;
         let verifierAddress = document.getElementById('verifierAddress').value;
+        if (verifierAddress === "") verifierAddress = '127.0.0.1';
         let revokeUser = {
             id: userID,
             C: userC,

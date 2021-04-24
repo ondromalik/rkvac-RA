@@ -76,68 +76,84 @@ let currentEpoch = "";
 
 const epochServer = net.createServer((c) => {
     // 'connection' listener.
-    console.log('client connected');
-    c.setEncoding('utf-8');
-    c.on('end', () => {
-        console.log('client disconnected');
-    });
-    c.on('data', function (data) {
-        console.log(data)
-        currentEpoch = data;
-        fs.writeFile('./data/RA/ve_epoch_for_RA.dat', data, (err) => {
-            if (err) {
-                console.log(err);
-            }
-            console.log("Data written to ./data/RA/ve_epoch_for_RA.dat");
-            const epochActivation = exec('./rkvac-protocol-multos-1.0.0 -r -e');
-            epochActivation.stdout.on('data', (data) => {
-                console.log(data);
-            });
-            epochActivation.on('close', () => {
-                let files;
-                files = fs.readdirSync('./data/RA').filter(fn => fn.endsWith('for_verifier.dat'));
-                var readStream = fs.createReadStream('./data/RA/' + files[0], 'utf-8');
-                readStream.on('data', (data) => {
-                    c.write(data);
+    let permittedHosts = [];
+    try {
+        permittedHosts = fs.readFileSync('./permitted-connections').toString().split("\n");
+    } catch (e) {
+        console.log(e);
+    }
+    if (!permittedHosts.includes(c.remoteAddress)) {
+        c.end();
+        console.log("Client " + c.remoteAddress + " not permitted");
+        logData("Client " + c.remoteAddress + " not permitted");
+    }
+    else {
+        console.log("Client " + c.remoteAddress + " permitted");
+        logData("Client " + c.remoteAddress + " permitted");
+        c.setEncoding('utf-8');
+        c.on('end', () => {
+            console.log('client disconnected');
+        });
+        c.on('data', function (data) {
+            console.log(data);
+            currentEpoch = data;
+            fs.writeFile('./data/RA/ve_epoch_for_RA.dat', data, (err) => {
+                if (err) {
+                    console.log(err);
+                    logData(err);
+                }
+                console.log("Data written to ./data/RA/ve_epoch_for_RA.dat");
+                logData("Data written to ./data/RA/ve_epoch_for_RA.dat");
+                const epochActivation = exec('./rkvac-protocol-multos-1.0.0 -r -e');
+                epochActivation.stdout.on('data', (data) => {
+                    console.log(data);
                 });
-                readStream.on('error', (err) => {
+                epochActivation.on('close', () => {
+                    let files;
+                    files = fs.readdirSync('./data/RA').filter(fn => fn.endsWith('for_verifier.dat'));
+                    var readStream = fs.createReadStream('./data/RA/' + files[0], 'utf-8');
+                    readStream.on('data', (data) => {
+                        c.write(data);
+                    });
+                    readStream.on('error', (err) => {
+                        console.log(err);
+                        logData(err);
+                    });
+                    readStream.on('end', () => {
+                        c.write(" ");
+                        c.end();
+                    });
+                });
+                epochActivation.on('error', (err) => {
                     console.log(err);
                 });
-                readStream.on('end', () => {
-                    c.write(" ");
-                    c.end();
-                });
-            });
-            epochActivation.on('error', (err) => {
-                console.log(err);
             });
         });
-    });
-    c.on('error', (err) => {
-        console.log(err);
-    });
-    c.setTimeout(10000);
-    c.on('timeout', () => {
-        console.log("Terminating connection");
-        c.destroy();
-    });
+        c.on('error', (err) => {
+            console.log(err);
+        });
+        c.setTimeout(10000);
+        c.on('timeout', () => {
+            console.log("Terminating connection");
+            c.end();
+        });
+    }
 });
 epochServer.on('error', (err) => {
     throw err;
 });
-epochServer.listen({host: 'localhost', port: 5004, exclusive: true}, () => {
+epochServer.listen({port: 5004, host: '0.0.0.0', exclusive: true}, () => {
     console.log('server bound');
 });
 
 /* TCP Socket for user revocation */
-
 let socket = new net.Socket();
 socket.setEncoding('utf-8');
 const connect = (server) => {
-    socket.connect(5003, server)
+    socket.connect({port: 5003, host: server})
 };
 socket.on('connect', function () {
-    console.log('Connected to server!');
+    console.log("Connected to server");
     var readStream = fs.createReadStream('./data/RA/ra_BL_epoch_' + currentEpoch + '_C_for_verifier.dat', 'utf-8');
     readStream.on('data', (data) => {
         socket.write(data);

@@ -92,7 +92,7 @@ block content
                         td
                             button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Nahrát
                 tr(id="downloadParam")
-                    td Veřejné parametre
+                    td Soukromé parametre
                     td ra_parameters.dat
                     td
                         form(action="/downloadParam" method="GET")
@@ -118,7 +118,7 @@ block content
                 input.w3-input.w3-border.w3-round-medium(type="text" id="epochNumberID")
             p
                 label Adresa ověřovatele:
-                input.w3-input.w3-border.w3-round-medium(type="text" id="verifierAddress" placeholder="localhost")
+                input.w3-input.w3-border.w3-round-medium(type="text" id="verifierAddress" placeholder="127.0.0.1")
             button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='revokeIDButton') Revokovat
             p
                 label.w3-text-green(hidden=true id="messageRevokeOK") Uživatel úspěšně revokován
