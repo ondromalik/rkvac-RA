@@ -110,7 +110,6 @@ const epochServer = net.createServer((c) => {
                 epochActivation.on('close', () => {
                     let files;
                     files = fs.readdirSync('./data/RA').filter(fn => fn.endsWith('for_verifier.dat'));
-                    // var readStream = fs.createReadStream('./data/RA/' + files[0], 'utf-8');
                     var readStream = fs.createReadStream('./data/RA/ra_BL_epoch_' + currentEpoch + '_C_for_verifier.dat', 'utf-8');
                     readStream.on('data', (data) => {
                         c.write(data);
