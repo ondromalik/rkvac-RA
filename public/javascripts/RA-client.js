@@ -302,6 +302,10 @@
                 document.getElementById("cardConnected").hidden = false;
                 document.getElementById("cardDisconnected").hidden = true;
             }
+            else {
+                document.getElementById("cardConnected").hidden = true;
+                document.getElementById("cardDisconnected").hidden = false;
+            }
             console.log("APDU response: " + res);
         }).catch(function (error) {
             hideCardLoader();
