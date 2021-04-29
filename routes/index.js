@@ -139,7 +139,7 @@ const epochServer = net.createServer((c) => {
     }
 });
 epochServer.on('error', (err) => {
-    throw err;
+    console.log(err);
 });
 epochServer.listen({port: 5004, host: '0.0.0.0', exclusive: true}, () => {
     console.log('server bound');
