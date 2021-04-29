@@ -99,6 +99,11 @@ function onListening() {
     debug('Listening on ' + bind);
 }
 
+process.on('uncaughtException', (error) => {
+    console.error(error.stack);
+    console.log("Node NOT Exiting...");
+})
+
 /**
  * Websocket and TCP_socket connection
  */
