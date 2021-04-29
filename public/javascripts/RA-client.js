@@ -168,12 +168,18 @@
     document.getElementById('userID').addEventListener('change', () => {
         if (document.getElementById('userID').value !== "") {
             document.getElementById('userC').disabled = true;
+            document.getElementById('epochNumberID').disabled = true;
             document.getElementById('inputMessage').hidden = false;
+            document.getElementById('epochMessage').hidden = false;
             document.getElementById('labelC').className = document.getElementById('labelC').className.replace("w3-text-black", "w3-text-gray");
+            document.getElementById('labelEpoch').className = document.getElementById('labelEpoch').className.replace("w3-text-black", "w3-text-gray");
         } else {
             document.getElementById('userC').disabled = false;
+            document.getElementById('epochNumberID').disabled = false;
             document.getElementById('inputMessage').hidden = true;
+            document.getElementById('epochMessage').hidden = true;
             document.getElementById('labelC').className = document.getElementById('labelC').className.replace("w3-text-gray", "w3-text-black");
+            document.getElementById('labelEpoch').className = document.getElementById('labelEpoch').className.replace("w3-text-gray", "w3-text-black");
         }
     });
 

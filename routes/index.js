@@ -400,8 +400,8 @@ router.post('/deleteFile', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
 });
 
 router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
-    let command = './rkvac-protocol-multos-1.0.0 -r -B "' + req.body.epoch + ' ' + req.body.id + '"';
-    currentEpoch = req.body.epoch;
+    currentEpoch = fs.readFileSync('./data/RA/ve_epoch_for_RA.dat');
+    let command = './rkvac-protocol-multos-1.0.0 -r -B "' + currentEpoch + ' ' + req.body.id + '"';
     exec(command, (error, stdout, stderr) => {
         if (error) {
             console.log(`stdout: ${stdout}`);

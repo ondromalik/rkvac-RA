@@ -114,8 +114,10 @@ block content
             p
                 label(hidden=true id="inputMessage") #[i Jenom jeden z dvojice parametrů identifikátor-pseudonym může být zadán.]
             p
-                label Číslo epochy:
+                label.w3-text-black(id="labelEpoch") Číslo epochy:
                 input.w3-input.w3-border.w3-round-medium(type="text" id="epochNumberID")
+            p
+                label(hidden=true id="epochMessage") #[i Epoch number is required only if revoking pseudonym.]
             p
                 label Adresa ověřovatele:
                 input.w3-input.w3-border.w3-round-medium(type="text" id="verifierAddress" placeholder="127.0.0.1")
