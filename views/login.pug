@@ -11,13 +11,13 @@ html
         div.w3-container.w3-centered(style="width: 33%; margin: auto")
             div.w3-card-4
                 div.w3-container.w3-light-blue.w3-text-black.w3-padding
-                    h2 Přihlášení
+                    h2 Login
                 form.w3-container(action="/login" method="POST" style="padding-bottom: 16px")
                     p
-                        label Jméno
+                        label Username
                         input.w3-input.w3-border.w3-round-medium(name="username")
                     p
-                        label Heslo
+                        label Password
                         input.w3-input.w3-border.w3-round-medium(type="password" name="password")
                     p
                         input.w3-btn.w3-round-medium.w3-light-blue.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type="submit" value="Login")

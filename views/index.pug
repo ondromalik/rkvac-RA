@@ -4,135 +4,136 @@ block content
 
     div.w3-card-4.w3-margin-top(style="width:60%;margin-left:20%" id="initiatingRA")
         header.w3-gray.w3-padding
-            h3 Inicializace Revokační autority
+            h3 RKVAC initialization
         div.w3-container.w3-padding
-            p Revokační autority není inicializována. Pokračujte inicializací aplikace, nebo vydáním revokačního handleru.
+            p RKVAC is not initialized. Initialize the app using button "Initialize".
             form(action="/initiateRA" method="GET")
-                button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit') Inicializovat
+                button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit') Initialize
 
     div.w3-card-4.w3-margin-top(style="width:60%;margin-left:20%")
         header.w3-light-blue.w3-padding
-            h3 Vydání revokačního handleru
+            h3 Revocation handler
         div.w3-container.w3-padding
-            h4.w3-margin-bottom Zvolte čtečku:
+            h4.w3-margin-bottom Select reader:
             div.w3-center.w3-margin-top
-                label.w3-text-red(id="cardStatus") Čtečka nedostupná
+                label.w3-text-red(id="cardStatus") No available reader
                 div(id="readerList")
             div.w3-container.w3-margin-top.w3-center
                 div(class="loader2" id="card-loader" hidden=true)
-                p.w3-text-green(id="cardConnected" hidden=true) Karta je funkční
-                p.w3-text-red(id="cardDisconnected" hidden=true) Karta není funkční
-            label #[i Info: Kliknutím na čtečku ji otestujete.]
+                p.w3-text-green(id="cardConnected" hidden=true) Card works properly
+                p.w3-text-red(id="cardDisconnected" hidden=true) Card isn't working properly
+            label #[i Info: Clicking on the reader will test the card in it.]
             div(id="reloadMessage")
-                p #[i V případě nezobrazení čtečky je nutné restartovat doplněk "Smart Card Extension", nebo celý prohlížeč.]
+                p #[i In case that your reader isn't listed, please reload Smart Card Extension or restart browser.]
         div.w3-container.w3-padding
             button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='issueHandlerButton' disabled=true) Vydat
         div.w3-container.w3-padding
             div(class="loader" id="login-loader" hidden=true)
-            label.w3-text-green(hidden=true id="messageHandlerOK") Revokační handler vydán
-            label.w3-text-red(hidden=true id="messageHandlerError") Požadavek nebyl úspěšný
-            label.w3-text-red(hidden=true id="rkvacUsed") RKVAC knihovna je práve používána, skuste za chvíli
+            label.w3-text-green(hidden=true id="messageHandlerOK") Revocation handler successfully assigned to the card
+            label.w3-text-red(hidden=true id="messageHandlerError") Request failed
+            label.w3-text-red(hidden=true id="rkvacUsed") RKVAC is currently used, try later
 
     div.w3-card-4.w3-margin-top(style="width:60%;margin-left:20%" id="RAFiles")
         header.w3-light-blue.w3-padding
-            h3 Soubory Revokační autority
+            h3 Revocation authority's files
         div.w3-container.w3-padding
             table.w3-table
                 tr
-                    th(style="width:25%") Popis
-                    th Soubor
-                    th(style="width:30%") Akce
+                    th(style="width:25%") Description
+                    th File
+                    th(style="width:30%") Action
                 tr(id="uploadPk")
                     form(action="/uploadPkFile" method="POST" enctype="multipart/form-data")
-                        td(style="padding-left:16px") Veřejný klíč
+                        td(style="padding-left:16px") Public key
                         td
                             input.w3-input(type='file' name='ra_pk.dat')
                         td
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Nahrát
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Upload
                 tr(id="downloadPk")
-                    td Veřejný klíč
+                    td Public key
                     td ra_pk.dat
                     td
                         form(action="/downloadPkFile" method="GET")
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small.w3-margin-right(type='submit') Stáhnout
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='button' id="deletePkButton") Vymazat
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small.w3-margin-right(type='submit') Download
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='button' id="deletePkButton") Delete
                 tr(id="uploadPubParam")
                     form(action="/uploadPubParamFile" method="POST" enctype="multipart/form-data")
-                        td(style="padding-left:16px") Veřejné parametry
+                        td(style="padding-left:16px") Public parameters
                         td
                             input.w3-input(type='file' name='ra_public_parameters.dat')
                         td
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Nahrát
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Upload
                 tr(id="downloadPubParam")
-                    td Veřejné parametre
+                    td Public parameters
                     td ra_public_parameters.dat
                     td
                         form(action="/downloadPubParam" method="GET")
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small.w3-margin-right(type='submit') Stáhnout
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='button' id="deletePubParamButton") Vymazat
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small.w3-margin-right(type='submit') Download
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='button' id="deletePubParamButton") Delete
                 tr(id="uploadSk")
                     form(action="/uploadSkFile" method="POST" enctype="multipart/form-data")
-                        td(style="padding-left:16px") Soukromý klíč
+                        td(style="padding-left:16px") Private key
                         td
                             input.w3-input(type='file' name='ra_sk.dat')
                         td
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Nahrát
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Upload
                 tr(id="downloadSk")
-                    td Soukromý klíč
+                    td Private key
                     td ra_sk.dat
                     td
                         form(action="/downloadSkFile" method="GET")
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small.w3-margin-right(type='submit') Stáhnout
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='button' id="deleteSkButton") Vymazat
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small.w3-margin-right(type='submit') Download
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='button' id="deleteSkButton") Delete
                 tr(id="uploadParam")
                     form(action="/uploadParamFile" method="POST" enctype="multipart/form-data")
-                        td(style="padding-left:16px") Veřejné parametry
+                        td(style="padding-left:16px") Private parameters
                         td
                             input.w3-input(type='file' name='ra_parameters.dat')
                         td
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Nahrát
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='submit' value='Upload') Upload
                 tr(id="downloadParam")
-                    td Soukromé parametre
+                    td Private parameters
                     td ra_parameters.dat
                     td
                         form(action="/downloadParam" method="GET")
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small.w3-margin-right(type='submit') Stáhnout
-                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='button' id="deleteParamButton") Vymazat
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small.w3-margin-right(type='submit') Download
+                            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(type='button' id="deleteParamButton") Upload
 
 
 
     div.w3-card-4.w3-margin-top(style="width:60%;margin-left:20%" id="revocation" hidden=true)
         header.w3-light-blue.w3-padding
-            h3 Revokace uživatele
+            h3 Revocation of a user
         div.w3-container.w3-padding
             p
-                label.w3-text-black(id="labelID") Identifikátor uživatele:
+                label.w3-text-black(id="labelID") User's identifier:
                 input.w3-input.w3-border.w3-round-medium(type="text" id="userID" placeholder="1000000000000001")
             p
-                label.w3-text-black(id="labelC") Pseudonym uživatele #[i C]:
+                label.w3-text-black(id="labelC") User's pseudonym #[i C]:
                 input.w3-input.w3-border.w3-round-medium(type="text" id="userC" placeholder="7deba037f...")
             p
-                label(hidden=true id="inputMessage") #[i Jenom jeden z dvojice parametrů identifikátor-pseudonym může být zadán.]
+                label(hidden=true id="inputMessage") #[i Only one of pair identifier-pseudonym can be specified.]
             p
-                label.w3-text-black(id="labelEpoch") Číslo epochy:
+                label.w3-text-black(id="labelEpoch") Epoch number:
                 input.w3-input.w3-border.w3-round-medium(type="text" id="epochNumberID")
             p
                 label(hidden=true id="epochMessage") #[i Epoch number is required only if revoking pseudonym.]
             p
-                label Adresa ověřovatele:
+                label Verifier's address:
                 input.w3-input.w3-border.w3-round-medium(type="text" id="verifierAddress" placeholder="127.0.0.1")
-            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='revokeIDButton') Revokovat
+                label #[i In case of multiple verifiers separate addresses with commas]
+            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='revokeIDButton') Revoke
             p
-                label.w3-text-green(hidden=true id="messageRevokeOK") Uživatel úspěšně revokován
+                label.w3-text-green(hidden=true id="messageRevokeOK") User successfully revoked from system
             p
-                label.w3-text-red(hidden=true id="messageRevokeError") Požadavek nebyl úspěšný
+                label.w3-text-red(hidden=true id="messageRevokeError") Request failed
 
     div.w3-card-4.w3-margin-top.w3-margin-bottom(style="width:60%;margin-left:20%")
         header.w3-light-blue.w3-padding
-            h3 Reset aplikace
+            h3 Application reset
         div.w3-container.w3-padding
-            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='resetRKVAC') Resetovat
+            button.w3-button.w3-round-medium.w3-light-gray.w3-text-black.w3-border.w3-border-grey.w3-padding-small(id='resetRKVAC') Reset
         div.w3-container.w3-padding(id="resetMessage" hidden=true)
-            label.w3-text-red Požadavek nebyl úspěšný
+            label.w3-text-red Request failed
 
     script(src='RA-client.js')
