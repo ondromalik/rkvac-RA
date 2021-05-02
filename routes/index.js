@@ -438,7 +438,7 @@ router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, r
             socket.setTimeout(10000);
             socket.on('timeout', () => {
                 console.log("Terminating connection");
-                socket.destroy();
+                socket.end();
             });
         }
         console.log(`stdout: ${stdout}`);
@@ -488,7 +488,7 @@ router.post('/post-revoke-user-C', connectEnsureLogin.ensureLoggedIn(), (req, re
             socket.setTimeout(10000);
             socket.on('timeout', () => {
                 console.log("Terminating connection");
-                socket.destroy();
+                socket.end();
             });
         }
         logData(stdout, error, stderr);
