@@ -430,7 +430,7 @@ router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, r
             });
             socket.on('error', function (error) {
                 console.log("Terminating connection: " + error);
-                socket.end();
+                socket.destroy();
             });
             socket.on('end', function () {
                 console.log("Disconnected from server");
@@ -438,7 +438,7 @@ router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, r
             socket.setTimeout(10000);
             socket.on('timeout', () => {
                 console.log("Terminating connection");
-                socket.end();
+                socket.destroy();
             });
         }
         console.log(`stdout: ${stdout}`);
@@ -480,10 +480,15 @@ router.post('/post-revoke-user-C', connectEnsureLogin.ensureLoggedIn(), (req, re
             });
             socket.on('error', function (error) {
                 console.log("Terminating connection: " + error);
-                socket.end();
+                socket.destroy();
             });
             socket.on('end', function () {
                 console.log("Disconnected from server");
+            });
+            socket.setTimeout(10000);
+            socket.on('timeout', () => {
+                console.log("Terminating connection");
+                socket.destroy();
             });
         }
         logData(stdout, error, stderr);
