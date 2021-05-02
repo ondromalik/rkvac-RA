@@ -435,6 +435,11 @@ router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, r
             socket.on('end', function () {
                 console.log("Disconnected from server");
             });
+            socket.setTimeout(10000);
+            socket.on('timeout', () => {
+                console.log("Terminating connection");
+                socket.end();
+            });
         }
         console.log(`stdout: ${stdout}`);
         logData(stdout, error, stderr);
