@@ -427,6 +427,9 @@ router.post('/post-revoke-user-ID', connectEnsureLogin.ensureLoggedIn(), (req, r
                 readStream.on('data', (data) => {
                     socket.write(data);
                 });
+                readStream.on('end', () => {
+                    socket.end();
+                });
             });
             socket.on('error', function (error) {
                 console.log("Terminating connection: " + error);
@@ -476,6 +479,9 @@ router.post('/post-revoke-user-C', connectEnsureLogin.ensureLoggedIn(), (req, re
                 var readStream = fs.createReadStream('./data/RA/ra_BL_epoch_' + currentEpoch + '_C_for_verifier.dat', 'utf-8');
                 readStream.on('data', (data) => {
                     socket.write(data);
+                });
+                readStream.on('end', () => {
+                    socket.end();
                 });
             });
             socket.on('error', function (error) {
