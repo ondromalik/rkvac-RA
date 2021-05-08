@@ -5,7 +5,7 @@
 - public files management
 - authentication via username & password
 - switching to new epoch
-- revoking user
+- revoking users
 
 ## Dependencies:
 - nodeJS, npm
