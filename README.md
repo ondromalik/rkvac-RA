@@ -21,6 +21,3 @@
 
   `npm run serverstart`
 - server runs on https://localhost:9443
-
-## Contact:
-xmalik19@stud.feec.vutbr.cz
