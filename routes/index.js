@@ -106,6 +106,7 @@ const epochServer = net.createServer((c) => {
                 const epochActivation = exec('./rkvac-protocol-multos-1.0.0 -r -e');
                 epochActivation.stdout.on('data', (data) => {
                     console.log(data);
+                    logData(data);
                 });
                 epochActivation.on('close', () => {
                     let files;
