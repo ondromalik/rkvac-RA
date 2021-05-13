@@ -34,9 +34,7 @@
         const socket = new WebSocket('wss://' + location.hostname + ':' + location.port);
         socket.addEventListener('message', function (event) {
             blobToHex(event.data).then(hexStr => {
-                console.log("APDU request: " + hexStr);
                 contactCard(index, hexStr).then(returnMessage => {
-                    console.log("APDU response: " + returnMessage);
                     socket.send(hexToBlob(returnMessage));
                 }).catch((error) => {
                     socket.send("error");
