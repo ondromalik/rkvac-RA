@@ -271,7 +271,6 @@ router.use(bodyParser.json());
 
 let rkvacUsed = false;
 router.post('/issueHandler', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
-    let startTime = Date.now();
     if (!rkvacUsed) {
         rkvacUsed = true;
         let command = "./rkvac-protocol-multos-1.0.0 -r";
@@ -295,7 +294,6 @@ router.post('/issueHandler', connectEnsureLogin.ensureLoggedIn(), (req, res) => 
             console.log(`stdout: ${stdout}`);
             logData(stdout, error, stderr);
             res.json({success: true});
-            console.log(Date.now() - startTime);
             rkvacUsed = false;
         });
     } else {

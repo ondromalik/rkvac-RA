@@ -67,7 +67,6 @@
 
     const issueRevokeHandler = document.getElementById('issueHandlerButton');
     issueRevokeHandler.addEventListener('click', function (e) {
-        let startTime = Date.now();
         startLoader();
         let tableRows = document.getElementsByClassName('cardSelector');
         let selectedCard = "";
@@ -79,7 +78,6 @@
         fetch('/issueHandler', {
             method: 'POST'
         }).then(function (response) {
-            console.log(Date.now() - startTime);
             response.json().then((data) => {
                 hideLoader();
                 document.getElementById('rkvacUsed').hidden = true;
