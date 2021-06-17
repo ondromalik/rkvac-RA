@@ -3,6 +3,7 @@ var router = express.Router();
 var path = require('path');
 //const csv = require('csv-parser');
 const fs = require('fs');
+const fse = require('fs-extra');
 const readline = require('readline');
 const bodyParser = require('body-parser');
 const {exec} = require("child_process");
@@ -55,7 +56,7 @@ const keyFilter = function (req, file, cb) {
 
 function logData(stdout, err, stderr) {
     let date = new Date();
-    let dateFormat = date.getFullYear() + '/' + (date.getMonth() < 10 ? '0' : '') + date.getMonth() + '/' + (date.getDate() < 10 ? '0' : '') + date.getDate() + ' ' +
+    let dateFormat = date.getFullYear() + '/' + (date.getMonth() < 10 ? '0' : '') + (date.getMonth() + 1) + '/' + (date.getDate() < 10 ? '0' : '') + date.getDate() + ' ' +
         date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + ":" + (date.getSeconds() < 10 ? '0' : '') + date.getSeconds() + ' ';
     if (err) {
         stdout += '\n' + 'error: ' + err;
@@ -302,13 +303,13 @@ router.post('/issueHandler', connectEnsureLogin.ensureLoggedIn(), (req, res) => 
 });
 
 router.post('/deleteData', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
-    fs.rmdir('./data', {recursive: true}, err => {
+    fse.move('./data', '/tmp/data/', {overwrite: true}, (err) => {
         if (err) {
             console.log(err);
             res.json({success: false});
             return;
         }
-        logData('RKVAC was reseted', err);
+        logData("RKVAC reseted");
         res.json({success: true});
     });
 });
